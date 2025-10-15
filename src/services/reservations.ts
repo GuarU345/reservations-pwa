@@ -1,3 +1,4 @@
+import { ReservationBody } from "../types/reservation"
 import { axios } from "../utils/axios"
 
 const getReservations = async (token: string) => {
@@ -9,6 +10,16 @@ const getReservations = async (token: string) => {
     return data
 }
 
+const createReservation = async (token: string, body: ReservationBody) => {
+    const { data } = await axios.post('/reservations', body, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    return data
+}
+
 export const reservationsService = {
-    getReservations
+    getReservations,
+    createReservation
 }
