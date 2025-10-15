@@ -1,12 +1,15 @@
 import { useParams } from "react-router"
 import { useFetchBusinessData } from "../hooks/useFetchBusinessData"
 import { useAuthStore } from "../store/useAuthStore"
-import { IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonPage, IonSpinner, IonText, IonTitle, IonToolbar } from "@ionic/react"
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonPage, IonSpinner, IonText, IonTitle, IonToolbar } from "@ionic/react"
 import { BusinessHour } from "../types/business"
+import { useState } from "react"
+import ReservationModal from "../components/ReservationModal"
 
 const Business: React.FC = () => {
     const { businessId } = useParams<{ businessId: string }>()
     const { token } = useAuthStore()
+    const [showModal, setShowModal] = useState(false)
 
     const { businessData, isLoading, error } = useFetchBusinessData(token!, businessId!)
 
@@ -14,7 +17,7 @@ const Business: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Negocio: {businessData?.name}</IonTitle>
+                    <IonTitle>Bookly</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -27,8 +30,9 @@ const Business: React.FC = () => {
                 )}
 
                 <IonCard>
-                    <IonCardHeader color="primary">
-                        <IonCardTitle>Datos del negocio</IonCardTitle>
+                    <IonCardHeader>
+                        <IonTitle></IonTitle>
+                        <IonCardTitle>Negocio: {businessData?.name}</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <p style={{ marginTop: '20px' }}>
@@ -70,9 +74,20 @@ const Business: React.FC = () => {
                         </IonCardContent>
                     </IonCard>
                 )}
+
+                <IonButton onClick={() => setShowModal(true)} style={{ marginLeft: '0.5rem' }}>
+                    Agendar reservación
+                </IonButton>
+
+                {showModal && (
+                    <ReservationModal
+                        showModal={showModal}
+                        setShowModal={setShowModal}
+                        businessId={businessData?.id}
+                    />
+                )}
             </IonContent>
         </IonPage>
-
     )
 }
 
