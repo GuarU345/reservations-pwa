@@ -63,7 +63,7 @@ const Reservations: React.FC = () => {
                         {reservations.map((res) => (
                             <IonCol size="12" sizeMd="6" key={res.id}>
                                 <IonCard>
-                                    <IonCardHeader>
+                                    <IonCardHeader style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <IonCardTitle>{user?.name}</IonCardTitle>
                                         <IonChip
                                             color={getStatusColor(res.status)}
@@ -80,12 +80,13 @@ const Reservations: React.FC = () => {
                                         <IonList lines="none">
                                             <IonItem>
                                                 <IonLabel>
-                                                    <strong>Email:</strong> {user?.email}
+                                                    <strong>Personas:</strong> {res.number_of_people}
                                                 </IonLabel>
                                             </IonItem>
                                             <IonItem>
                                                 <IonLabel>
-                                                    <strong>Personas:</strong> {res.number_of_people}
+                                                    <strong>Fecha: </strong>{' '}
+                                                    {new Date(res.start_time).toLocaleDateString()}
                                                 </IonLabel>
                                             </IonItem>
                                             <IonItem>

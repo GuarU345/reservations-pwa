@@ -6,11 +6,13 @@ import ValidationAlert from "./ValidationAlert"
 interface ReservationModalProps {
     showModal: boolean
     setShowModal: (show: boolean) => void
+    businessId: string | undefined
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({
     showModal,
-    setShowModal
+    setShowModal,
+    businessId
 }) => {
     const {
         handleCreate,
@@ -28,6 +30,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         const formData = new FormData(form)
 
         const data = {
+            businessId,
             numberOfPeople: Number(formData.get('numberOfPeople')),
             startTime: formData.get('startTime'),
             endTime: formData.get('endTime')

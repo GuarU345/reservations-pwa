@@ -1,4 +1,4 @@
-import { IonCard, IonCardTitle, IonIcon } from "@ionic/react"
+import { IonCard, IonCardContent, IonCardTitle, IonIcon } from "@ionic/react"
 
 interface HomeItemProps {
     link: string
@@ -14,9 +14,11 @@ const HomeItem: React.FC<HomeItemProps> = ({
     text
 }) => {
     return (
-        <IonCard style={{ padding: '1rem' }} routerLink={link} button>
-            <IonIcon icon={icon} size="large" color={color} />
-            <IonCardTitle>{text}</IonCardTitle>
+        <IonCard style={{ padding: '0.5rem' }} routerLink={link} button>
+            <IonCardContent style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <IonCardTitle>{text}</IonCardTitle>
+                <IonIcon icon={icon} size="large" color={color} />
+            </IonCardContent>
         </IonCard>
     )
 }
