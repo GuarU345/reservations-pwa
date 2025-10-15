@@ -41,10 +41,12 @@ const Reservations: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Mis Reservaciones</IonTitle>
+                    <IonTitle>Bookly</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
+                <IonTitle style={{ marginTop: '20px' }}>Mis Reservaciones</IonTitle>
+
                 {isLoading && <p>Cargando...</p>}
                 {error && <p>Error: {error}</p>}
                 {reservations.length === 0 && !isLoading &&
