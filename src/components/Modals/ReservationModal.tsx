@@ -1,7 +1,7 @@
 import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar } from "@ionic/react"
-import { useFetchCreateReservation } from "../hooks/useFetchCreateReservation"
+import { useFetchCreateReservation } from "../../hooks/useFetchCreateReservation"
 import React from "react"
-import ValidationAlert from "./ValidationAlert"
+import ValidationAlert from "../ValidationAlert"
 
 interface ReservationModalProps {
     showModal: boolean

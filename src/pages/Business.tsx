@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/useAuthStore"
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonPage, IonSpinner, IonText, IonTitle, IonToolbar } from "@ionic/react"
 import { BusinessHour } from "../types/business"
 import { useState } from "react"
-import ReservationModal from "../components/ReservationModal"
+import ReservationModal from "../components/Modals/ReservationModal"
 
 const Business: React.FC = () => {
     const { businessId } = useParams<{ businessId: string }>()

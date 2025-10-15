@@ -21,3 +21,7 @@ export interface ReservationBody {
     startTime: string
     endTime: string
 }
+
+export interface CancelReservationBody {
+    reason: string
+}
