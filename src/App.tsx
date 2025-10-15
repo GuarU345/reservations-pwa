@@ -36,6 +36,8 @@ import Reservations from './pages/Reservations';
 import { useAuthStore } from './store/useAuthStore';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import Business from './pages/Business';
+import Businesses from './pages/Businesses';
 
 setupIonicReact();
 
@@ -58,8 +60,6 @@ const App: React.FC = () => {
               isLogin ? <Reservations /> : <Redirect to="/" />
             }
           />
-
-          {/* Public Routes */}
           <Route
             exact
             path="/home"
@@ -67,6 +67,22 @@ const App: React.FC = () => {
               isLogin ? <Home /> : <Redirect to="/" />
             }
           />
+          <Route
+            exact
+            path="/businesses"
+            render={() =>
+              isLogin ? <Businesses /> : <Redirect to="/" />
+            }
+          />
+          <Route
+            exact
+            path="/businesses/:businessId"
+            render={() =>
+              isLogin ? <Business /> : <Redirect to="/" />
+            }
+          />
+
+          {/* Public Routes */}
           <Route
             exact
             path="/login"
