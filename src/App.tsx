@@ -32,22 +32,56 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import Reservations from './pages/Reservations';
+import { useAuthStore } from './store/useAuthStore';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
-);
+const App: React.FC = () => {
+  const { isLogin } = useAuthStore()
+
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <IonRouterOutlet>
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+
+          {/* Protected Routes */}
+          <Route
+            exact
+            path="/reservations"
+            render={() =>
+              isLogin ? <Reservations /> : <Redirect to="/" />
+            }
+          />
+
+          {/* Public Routes */}
+          <Route
+            exact
+            path="/home"
+            render={() =>
+              isLogin ? <Home /> : <Redirect to="/" />
+            }
+          />
+          <Route
+            exact
+            path="/login"
+            render={() =>
+              isLogin ? <Redirect to="/home" /> : <Login />
+            }
+          />
+          <Route exact path="/register">
+            <Register />
+          </Route>
+
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  )
+};
 
 export default App;
