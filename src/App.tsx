@@ -38,6 +38,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Business from './pages/Business';
 import Businesses from './pages/Businesses';
+import FavoriteBusinesses from './pages/FavoritesBusinesses';
 
 setupIonicReact();
 
@@ -79,6 +80,13 @@ const App: React.FC = () => {
             path="/businesses/:businessId"
             render={() =>
               isLogin ? <Business /> : <Redirect to="/" />
+            }
+          />
+          <Route
+            exact
+            path="/favorites"
+            render={() =>
+              isLogin ? <FavoriteBusinesses /> : <Redirect to="/" />
             }
           />
 
