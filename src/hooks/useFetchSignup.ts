@@ -22,7 +22,7 @@ export const useFetchSignup = () => {
         try {
             await authService.signup(body)
             setSuccess(true)
-            router.push('/login', 'forward')
+            router.push('/login')
         } catch (error: any) {
             const errors = error.response?.data?.errors || [];
             if (errors.length > 0) {
