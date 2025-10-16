@@ -4,7 +4,7 @@ import { usersService } from "../services/user"
 
 export const useLikeBusiness = (token: string, businessId: string, liked: boolean) => {
     const [isLiked, setIsLiked] = useState<boolean>(liked)
-    const [sucess, setSuccess] = useState(false)
+    const [success, setSuccess] = useState(false)
     const [error, setError] = useState("")
     const [message, setMessage] = useState("")
 
@@ -30,7 +30,7 @@ export const useLikeBusiness = (token: string, businessId: string, liked: boolea
         handleLikeBusiness,
         error,
         setError,
-        sucess,
+        success,
         setSuccess,
         message,
         isLiked

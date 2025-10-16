@@ -16,7 +16,7 @@ const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }
         error,
         setError,
         message,
-        sucess,
+        success,
         setSuccess,
         isLiked
     } = useLikeBusiness(token!, businessId, liked)
@@ -27,7 +27,7 @@ const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }
 
             <IonAlert
                 header='Exito'
-                isOpen={sucess}
+                isOpen={success}
                 onDidDismiss={() => setSuccess(false)}
                 message={message}
                 buttons={['Ok']}
