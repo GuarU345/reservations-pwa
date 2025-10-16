@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact, useIonRouter } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 
@@ -34,99 +32,34 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import Reservations from './pages/Reservations';
-import { useAuthStore } from './store/useAuthStore';
-import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Business from './pages/Business';
 import Businesses from './pages/Businesses';
 import FavoriteBusinesses from './pages/FavoritesBusinesses';
-import { authService } from './services/auth';
-import { useEffect } from 'react';
+import SessionChecker from './components/SessionChecker';
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
+import Login from './pages/auth/Login';
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const { token, isLogin, setIsLogin, setUser, setToken } = useAuthStore()
-
-  const router = useIonRouter()
-
-  const checkTokenIsActive = async (token: string) => {
-    try {
-      const response = await authService.tokenIsActive(token)
-      if (response.active) return
-
-      setIsLogin(false)
-      setToken("")
-      setUser(null)
-      router.push("/login", "forward")
-    } catch (error: any) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    if (isLogin) {
-      checkTokenIsActive(token!)
-    }
-  }, [isLogin])
-
   return (
     <IonApp>
       <IonReactRouter>
+        <SessionChecker />
         <IonRouterOutlet>
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-
           {/* Protected Routes */}
-          <Route
-            exact
-            path="/reservations"
-            render={() =>
-              isLogin ? <Reservations /> : <Redirect to="/" />
-            }
-          />
-          <Route
-            exact
-            path="/home"
-            render={() =>
-              isLogin ? <Home /> : <Redirect to="/" />
-            }
-          />
-          <Route
-            exact
-            path="/businesses"
-            render={() =>
-              isLogin ? <Businesses /> : <Redirect to="/" />
-            }
-          />
-          <Route
-            exact
-            path="/businesses/:businessId"
-            render={() =>
-              isLogin ? <Business /> : <Redirect to="/" />
-            }
-          />
-          <Route
-            exact
-            path="/favorites"
-            render={() =>
-              isLogin ? <FavoriteBusinesses /> : <Redirect to="/" />
-            }
-          />
+          <PrivateRoute exact path="/home" component={Home} />
+          <PrivateRoute exact path="/reservations" component={Reservations} />
+          <PrivateRoute exact path="/businesses" component={Businesses} />
+          <PrivateRoute exact path="/businesses/:businessId" component={Business} />
+          <PrivateRoute exact path="/favorites" component={FavoriteBusinesses} />
 
           {/* Public Routes */}
-          <Route
-            exact
-            path="/login"
-            render={() =>
-              isLogin ? <Redirect to="/home" /> : <Login />
-            }
-          />
-          <Route exact path="/register">
-            <Register />
-          </Route>
-
+          <PublicRoute exact path="/login" component={Login} />
+          <PublicRoute exact path="/register" component={Register} />
+          <PublicRoute exact path="/" component={Login} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
