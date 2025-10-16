@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToolbar } from "@ionic/react"
+import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToast, IonToolbar, useIonRouter } from "@ionic/react"
 import React from "react"
 import ValidationAlert from "../../components/ValidationAlert"
 import { useFetchSignin } from "../../hooks/useFetchSignin"
@@ -15,14 +15,18 @@ const Login: React.FC = () => {
         success
     } = useFetchSignin()
 
+    const router = useIonRouter()
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
+        const form = e.target as HTMLFormElement
         const formData = new FormData(e.target as HTMLFormElement)
         const data = {
             email: formData.get('email') as string,
             password: formData.get('password') as string,
         }
         handleSignin(data)
+        form.reset()
     }
 
     return (
@@ -55,12 +59,12 @@ const Login: React.FC = () => {
                             />
                         </IonItem>
 
-                        <IonAlert
+                        <IonToast
                             isOpen={success}
                             onDidDismiss={() => setSuccess(false)}
-                            header="Exito"
                             message="Inicio de sesion correcto"
-                            buttons={['Entendido']}
+                            duration={1500}
+                            position="middle"
                         />
 
                         <ValidationAlert
@@ -78,9 +82,20 @@ const Login: React.FC = () => {
                             buttons={['Entendido']}
                         />
 
-                        <div className="ion-text-center ion-margin-top">
+                        <div>
                             <IonButton type="submit" expand="block" disabled={isLoading}>
                                 {isLoading ? <IonSpinner name="crescent" /> : 'Iniciar Sesión'}
+                            </IonButton>
+                        </div>
+
+                        <div>
+                            <IonButton
+                                style={{ display: 'flex', alingItems: 'center' }}
+                                fill="clear"
+                                color="primary"
+                                onClick={() => router.push('/register')}
+                            >
+                                ¿No tienes cuenta? Regístrate
                             </IonButton>
                         </div>
                     </IonList>
