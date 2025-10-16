@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IonAlert, IonIcon } from '@ionic/react'
 import { star } from 'ionicons/icons'
 import { useAuthStore } from '../store/useAuthStore'
