@@ -9,4 +9,5 @@ export interface Signup {
 export interface Signin {
     email: string,
     password: string
+    role: string
 }

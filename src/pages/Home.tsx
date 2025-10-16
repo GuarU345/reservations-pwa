@@ -1,4 +1,5 @@
 import {
+  IonButtons,
   IonContent,
   IonHeader,
   IonPage,
@@ -8,6 +9,7 @@ import {
 import { calendar, pin, heart } from 'ionicons/icons'
 import { useAuthStore } from '../store/useAuthStore';
 import HomeItem from '../components/HomeItem';
+import LogoutButton from '../components/LogoutButton';
 
 const Home: React.FC = () => {
   const { user } = useAuthStore()
@@ -17,6 +19,9 @@ const Home: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Bookly</IonTitle>
+          <IonButtons slot='end'>
+            <LogoutButton />
+          </IonButtons>
         </IonToolbar>
       </IonHeader>
 

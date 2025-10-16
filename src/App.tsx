@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 
@@ -39,11 +40,35 @@ import Register from './pages/auth/Register';
 import Business from './pages/Business';
 import Businesses from './pages/Businesses';
 import FavoriteBusinesses from './pages/FavoritesBusinesses';
+import { authService } from './services/auth';
+import { useEffect } from 'react';
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const { isLogin } = useAuthStore()
+  const { token, isLogin, setIsLogin, setUser, setToken } = useAuthStore()
+
+  const router = useIonRouter()
+
+  const checkTokenIsActive = async (token: string) => {
+    try {
+      const response = await authService.tokenIsActive(token)
+      if (response.active) return
+
+      setIsLogin(false)
+      setToken("")
+      setUser(null)
+      router.push("/login", "forward")
+    } catch (error: any) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (isLogin) {
+      checkTokenIsActive(token!)
+    }
+  }, [isLogin])
 
   return (
     <IonApp>

@@ -11,7 +11,27 @@ const signin = async (body: Signin) => {
     return data
 }
 
+const logout = async (token: string) => {
+    const { data } = await axios.delete("/logout", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return data
+}
+
+const tokenIsActive = async (token: string) => {
+    const { data } = await axios.get("/session/active", {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return data
+}
+
 export const authService = {
     signup,
-    signin
+    signin,
+    logout,
+    tokenIsActive
 }

@@ -12,7 +12,7 @@ interface AuthState {
     user: User | null,
     isLogin: boolean,
     setToken: (token: string) => void,
-    setUser: (user: User) => void,
+    setUser: (user: User | null) => void,
     setIsLogin: (isLogin: boolean) => void
 }
 

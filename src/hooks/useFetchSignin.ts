@@ -16,8 +16,13 @@ export const useFetchSignin = () => {
     const handleSignin = async (data: any) => {
         setIsLoading(true)
 
+        const body = {
+            ...data,
+            role: 'CUSTOMER'
+        }
+
         try {
-            const response = await authService.signin(data)
+            const response = await authService.signin(body)
             setSuccess(true)
             setUser(response.user)
             setToken(response.token)
