@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToolbar } from "@ionic/react"
+import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToolbar, useIonRouter } from "@ionic/react"
 import { useFetchSignup } from "../../hooks/useFetchSignup"
 import ValidationAlert from "../../components/ValidationAlert"
 
@@ -13,6 +13,8 @@ const Register: React.FC = () => {
         setSuccess,
         success
     } = useFetchSignup()
+
+    const router = useIonRouter()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -103,7 +105,18 @@ const Register: React.FC = () => {
                         {/* Botón */}
                         <div className="ion-text-center ion-margin-top">
                             <IonButton type="submit" expand="block" disabled={isLoading}>
-                                {isLoading ? <IonSpinner name="crescent" /> : 'Iniciar Sesión'}
+                                {isLoading ? <IonSpinner name="crescent" /> : 'Registrarme'}
+                            </IonButton>
+                        </div>
+
+                        <div>
+                            <IonButton
+                                style={{ display: 'flex', alingItems: 'center' }}
+                                fill="clear"
+                                color="primary"
+                                onClick={() => router.push('/login')}
+                            >
+                                ¿Ya tienes cuenta? Inicia sesión
                             </IonButton>
                         </div>
                     </IonList>
