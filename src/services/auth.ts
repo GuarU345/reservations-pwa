@@ -12,7 +12,7 @@ const signin = async (body: Signin) => {
 }
 
 const logout = async (token: string) => {
-    const { data } = await axios.delete("/logout", {
+    const { data } = await axios.post("/logout", {}, {
         headers: {
             Authorization: `Bearer ${token}`
         }
