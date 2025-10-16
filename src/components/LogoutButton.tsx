@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonIcon } from "@ionic/react"
+import { IonAlert, IonButton, IonIcon, IonToast } from "@ionic/react"
 import { logOutOutline } from "ionicons/icons"
 import { useLogout } from "../hooks/useLogout"
 
@@ -17,12 +17,11 @@ const LogoutButton: React.FC = () => {
                 <IonIcon icon={logOutOutline}></IonIcon>
             </IonButton>
 
-            <IonAlert
-                header='Exito'
+            <IonToast
                 isOpen={success}
                 onDidDismiss={() => setSuccess(false)}
                 message="Sesión cerrada correctamente"
-                buttons={['Ok']}
+                duration={1500}
             />
 
             <IonAlert
