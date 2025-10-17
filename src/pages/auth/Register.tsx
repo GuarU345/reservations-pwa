@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToolbar, useIonRouter } from "@ionic/react"
+import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToast, IonToolbar, useIonRouter } from "@ionic/react"
 import { useFetchSignup } from "../../hooks/useFetchSignup"
 import ValidationAlert from "../../components/ValidationAlert"
 
@@ -6,12 +6,11 @@ const Register: React.FC = () => {
     const {
         handleSignup,
         isLoading,
-        setError,
+        isSuccess,
         error,
+        setError,
         setValidationErrors,
         validationErrors,
-        setSuccess,
-        success
     } = useFetchSignup()
 
     const router = useIonRouter()
@@ -78,12 +77,11 @@ const Register: React.FC = () => {
                             />
                         </IonItem>
 
-                        <IonAlert
-                            isOpen={success}
-                            onDidDismiss={() => setSuccess(false)}
-                            header="Registro Exitoso"
+                        <IonToast
+                            isOpen={isSuccess}
+                            position="middle"
                             message="Te has registrado correctamente"
-                            buttons={['Entendido']}
+                            duration={2000}
                         />
 
                         <ValidationAlert
@@ -95,12 +93,11 @@ const Register: React.FC = () => {
 
                         <IonAlert
                             isOpen={!!error}
-                            onDidDismiss={() => setError('')}
+                            onDidDismiss={() => setError("")}
                             header="Error"
                             message={error || ''}
                             buttons={['Entendido']}
                         />
-
 
                         {/* Botón */}
                         <div className="ion-text-center ion-margin-top">
