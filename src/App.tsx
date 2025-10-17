@@ -1,6 +1,7 @@
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -42,27 +43,30 @@ import PublicRoute from './components/PublicRoute';
 import Login from './pages/auth/Login';
 
 setupIonicReact();
+const queryClient = new QueryClient()
 
 const App: React.FC = () => {
   return (
-    <IonApp>
-      <IonReactRouter>
-        <SessionChecker />
-        <IonRouterOutlet>
-          {/* Protected Routes */}
-          <PrivateRoute exact path="/home" component={Home} />
-          <PrivateRoute exact path="/reservations" component={Reservations} />
-          <PrivateRoute exact path="/businesses" component={Businesses} />
-          <PrivateRoute exact path="/businesses/:businessId" component={Business} />
-          <PrivateRoute exact path="/favorites" component={FavoriteBusinesses} />
+    <QueryClientProvider client={queryClient}>
+      <IonApp>
+        <IonReactRouter>
+          <SessionChecker />
+          <IonRouterOutlet>
+            {/* Protected Routes */}
+            <PrivateRoute exact path="/home" component={Home} />
+            <PrivateRoute exact path="/reservations" component={Reservations} />
+            <PrivateRoute exact path="/businesses" component={Businesses} />
+            <PrivateRoute exact path="/businesses/:businessId" component={Business} />
+            <PrivateRoute exact path="/favorites" component={FavoriteBusinesses} />
 
-          {/* Public Routes */}
-          <PublicRoute exact path="/login" component={Login} />
-          <PublicRoute exact path="/register" component={Register} />
-          <PublicRoute exact path="/" component={Login} />
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
+            {/* Public Routes */}
+            <PublicRoute exact path="/login" component={Login} />
+            <PublicRoute exact path="/register" component={Register} />
+            <PublicRoute exact path="/" component={Login} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </QueryClientProvider>
   )
 };
 
