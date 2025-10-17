@@ -8,6 +8,7 @@ import {
     IonModal,
     IonTextarea,
     IonTitle,
+    IonToast,
     IonToolbar
 } from "@ionic/react"
 import { useFetchCancelReservation } from "../../hooks/useFetchCancelReservation"
@@ -25,9 +26,8 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
     setShowModal
 }) => {
     const {
-        handleCancel,
-        success,
-        setSuccess,
+        cancelReservation,
+        isSuccess,
         error,
         setError,
         validationErrors,
@@ -43,10 +43,7 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
             reason: formData.get('reason'),
         }
 
-        handleCancel(data)
-        if (success) {
-            setShowModal(false)
-        }
+        cancelReservation(data)
     }
 
     return (
@@ -79,12 +76,11 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
                 </IonContent>
             </IonModal>
 
-            <IonAlert
-                isOpen={success}
-                onDidDismiss={() => setSuccess(false)}
-                header="Exito"
+            <IonToast
+                isOpen={isSuccess}
+                position="middle"
                 message="Reservación cancelada con éxito"
-                buttons={['Entendido']}
+                duration={2000}
             />
 
             <ValidationAlert
@@ -96,7 +92,7 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
 
             <IonAlert
                 isOpen={!!error}
-                onDidDismiss={() => setError('')}
+                onDidDismiss={() => setError("")}
                 header="Error"
                 message={error || ''}
                 buttons={['Entendido']}
