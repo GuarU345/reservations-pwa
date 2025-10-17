@@ -7,12 +7,11 @@ const Login: React.FC = () => {
     const {
         handleSignin,
         isLoading,
-        setError,
+        isSuccess,
         error,
+        setError,
         setValidationErrors,
         validationErrors,
-        setSuccess,
-        success
     } = useFetchSignin()
 
     const router = useIonRouter()
@@ -60,11 +59,10 @@ const Login: React.FC = () => {
                         </IonItem>
 
                         <IonToast
-                            isOpen={success}
-                            onDidDismiss={() => setSuccess(false)}
-                            message="Inicio de sesion correcto"
-                            duration={1500}
+                            isOpen={isSuccess}
                             position="middle"
+                            message="Inicio de sesion correcto"
+                            duration={2000}
                         />
 
                         <ValidationAlert
@@ -76,7 +74,7 @@ const Login: React.FC = () => {
 
                         <IonAlert
                             isOpen={!!error}
-                            onDidDismiss={() => setError('')}
+                            onDidDismiss={() => setError("")}
                             header="Error"
                             message={error || ''}
                             buttons={['Entendido']}
