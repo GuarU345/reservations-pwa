@@ -5,28 +5,31 @@ import { useLogout } from "../hooks/useLogout"
 const LogoutButton: React.FC = () => {
     const {
         handleLogout,
-        success,
-        setSuccess,
+        isSuccess,
         error,
         setError
     } = useLogout()
 
+    const handleClick = () => {
+        handleLogout()
+    }
+
     return (
         <>
-            <IonButton onClick={handleLogout}>
+            <IonButton onClick={handleClick}>
                 <IonIcon icon={logOutOutline}></IonIcon>
             </IonButton>
 
             <IonToast
-                isOpen={success}
-                onDidDismiss={() => setSuccess(false)}
+                isOpen={isSuccess}
+                position="middle"
                 message="Sesión cerrada correctamente"
-                duration={1500}
+                duration={2000}
             />
 
             <IonAlert
                 isOpen={!!error}
-                onDidDismiss={() => setError('')}
+                onDidDismiss={() => setError("")}
                 header="Error"
                 message={error || ''}
                 buttons={['Entendido']}
