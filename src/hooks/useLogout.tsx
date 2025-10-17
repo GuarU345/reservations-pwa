@@ -27,6 +27,7 @@ export const useLogout = () => {
         handleLogout: mutation.mutate,
         isLoading: mutation.isPending,
         isSuccess: mutation.isSuccess,
-        error
+        error,
+        setError
     }
 }
