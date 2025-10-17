@@ -14,7 +14,7 @@ export const useFetchBusinessData = (token: string, businessId: string) => {
             return response
         },
         enabled: !!token && !!businessId,
-        staleTime: 1000 * 60 * 2,
+        staleTime: 0,
         retry: 1,
     })
 

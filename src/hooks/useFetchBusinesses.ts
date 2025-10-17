@@ -13,7 +13,7 @@ export const useFetchBusinesses = (token: string) => {
             return response
         },
         enabled: !!token,
-        staleTime: 1000 * 60 * 5,
+        staleTime: 0,
     })
 
     const filtered = useMemo(() => {

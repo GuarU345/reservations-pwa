@@ -1,23 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAuthStore } from "../store/useAuthStore"
 import { reservationsService } from "../services/reservations"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { useModalStore } from "../store/useModalStore"
 
 export const useFetchCreateReservation = () => {
     const { token } = useAuthStore()
-    const queryClient = useQueryClient()
     const [error, setError] = useState("")
     const [validationErrors, setValidationErrors] = useState([])
+    const { setShowModal } = useModalStore()
+
+    const queryClient = useQueryClient()
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
-            const response = await reservationsService.createReservation(token!, data)
-            return response
+            await reservationsService.createReservation(token!, data)
         },
-        onSuccess: (_data) => {
-            queryClient.invalidateQueries({ queryKey: ['reservations'] })
+        onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ['reservations'] })
+            setShowModal(false)
         },
         onError: (error: any) => {
             const errors = error.response?.data?.errors || [];

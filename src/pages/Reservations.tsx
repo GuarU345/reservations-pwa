@@ -9,6 +9,7 @@ import {
     IonHeader,
     IonPage,
     IonRow,
+    IonSpinner,
     IonTitle,
     IonToolbar
 } from "@ionic/react"
@@ -30,8 +31,13 @@ const Reservations: React.FC = () => {
             <IonContent fullscreen>
                 <IonTitle style={{ marginTop: '20px' }}>Mis Reservaciones</IonTitle>
 
-                {isLoading && <p>Cargando...</p>}
                 {error && <p>Error: {error.message}</p>}
+                {isLoading && (
+                    <div className="flex justify-center items-center h-full">
+                        <IonSpinner name="crescent" />
+                    </div>
+                )}
+
                 {reservations?.length === 0 && !isLoading &&
                     <IonCard>
                         <IonCardHeader>

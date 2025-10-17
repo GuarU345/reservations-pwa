@@ -2,7 +2,7 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonChip, IonItem, Io
 import { Reservation } from "../types/reservation"
 import { RESERVATION_STATUS } from "../utils/constants"
 import CancelReservationModal from "./Modals/CancelReservationModal"
-import { useState } from "react"
+import { useModalStore } from "../store/useModalStore"
 
 interface ReservationCardProps {
     reservation: Reservation
@@ -11,7 +11,6 @@ interface ReservationCardProps {
 const ReservationCard: React.FC<ReservationCardProps> = ({
     reservation
 }) => {
-    const [showModal, setShowModal] = useState(false)
     const {
         id,
         status,
@@ -20,6 +19,8 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
         end_time,
         created_at
     } = reservation
+
+    const { showModal, setShowModal } = useModalStore()
 
     const getStatusColor = (status: keyof typeof RESERVATION_STATUS) => {
         const statusColors = {
@@ -86,16 +87,14 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
                             Cancelar Reservación
                         </IonButton>
                     )}
+
+                    {showModal &&
+                        <CancelReservationModal
+                            reservationId={id}
+                        />
+                    }
                 </IonCardContent>
             </IonCard>
-
-            {showModal &&
-                <CancelReservationModal
-                    reservationId={id}
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                />
-            }
         </>
 
     )
