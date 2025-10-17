@@ -43,7 +43,7 @@ const FavoriteBusinesses: React.FC = () => {
                 {likedBusinesses.length === 0 && !isLoading && (
                     <IonCard>
                         <IonCardHeader>
-                            <IonCardTitle>No se encontraron negocios</IonCardTitle>
+                            <IonCardTitle>No se encontraron negocios, agrega tu primer negocio</IonCardTitle>
                         </IonCardHeader>
                     </IonCard>
                 )}
