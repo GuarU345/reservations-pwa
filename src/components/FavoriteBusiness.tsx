@@ -1,6 +1,5 @@
-import { IonAlert, IonIcon } from '@ionic/react'
+import { IonAlert, IonIcon, IonToast } from '@ionic/react'
 import { star } from 'ionicons/icons'
-import { useAuthStore } from '../store/useAuthStore'
 import { useLikeBusiness } from '../hooks/useLikeBusiness'
 
 interface FavoriteBusinessProps {
@@ -9,32 +8,33 @@ interface FavoriteBusinessProps {
 }
 
 const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }) => {
-    const { token } = useAuthStore()
     const {
         handleLikeBusiness,
         error,
         setError,
         message,
-        success,
-        setSuccess,
+        isSuccess,
         isLiked
-    } = useLikeBusiness(token!, businessId, liked)
+    } = useLikeBusiness(businessId, liked)
+
+    const handleClick = () => {
+        handleLikeBusiness()
+    }
 
     return (
         <>
-            <IonIcon color={isLiked ? 'warning' : 'medium'} onClick={handleLikeBusiness} icon={star} size="large" className="mb-2 text-primary" />
+            <IonIcon color={isLiked ? 'warning' : 'medium'} onClick={handleClick} icon={star} size="large" className="mb-2 text-primary" />
 
-            <IonAlert
-                header='Exito'
-                isOpen={success}
-                onDidDismiss={() => setSuccess(false)}
+            <IonToast
+                position='middle'
+                isOpen={isSuccess}
                 message={message}
-                buttons={['Ok']}
+                duration={2000}
             />
 
             <IonAlert
                 isOpen={!!error}
-                onDidDismiss={() => setError('')}
+                onDidDismiss={() => setError("")}
                 header="Error"
                 message={error || ''}
                 buttons={['Entendido']}
