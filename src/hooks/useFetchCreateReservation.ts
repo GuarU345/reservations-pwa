@@ -1,23 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react"
 import { useAuthStore } from "../store/useAuthStore"
 import { reservationsService } from "../services/reservations"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
 
 export const useFetchCreateReservation = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
-    const [error, setError] = useState<null | string>(null)
-    const [validationErrors, setValidationErrors] = useState<string[]>([])
     const { token } = useAuthStore()
+    const queryClient = useQueryClient()
+    const [error, setError] = useState("")
+    const [validationErrors, setValidationErrors] = useState([])
 
-    const handleCreate = async (data: any) => {
-        setIsLoading(true)
-
-        try {
+    const mutation = useMutation({
+        mutationFn: async (data: any) => {
             const response = await reservationsService.createReservation(token!, data)
-            setSuccess(true)
-            console.log(response)
-        } catch (error: any) {
+            return response
+        },
+        onSuccess: (_data) => {
+            queryClient.invalidateQueries({ queryKey: ['reservations'] })
+        },
+        onError: (error: any) => {
             const errors = error.response?.data?.errors || [];
             if (errors.length > 0) {
                 const errorMessages = errors.map((err: any) => err.message)
@@ -25,19 +27,17 @@ export const useFetchCreateReservation = () => {
             } else {
                 setError(error.response?.data.message)
             }
-        } finally {
-            setIsLoading(false)
-        }
-    }
+        },
+    })
 
     return {
-        isLoading,
-        success,
-        setSuccess,
-        setError,
+        createReservation: mutation.mutate,
+        isLoading: mutation.isPending,
+        isSuccess: mutation.isSuccess,
         error,
+        setError,
+        reset: mutation.reset,
         setValidationErrors,
-        validationErrors,
-        handleCreate
+        validationErrors
     }
 }

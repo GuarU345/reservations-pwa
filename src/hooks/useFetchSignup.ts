@@ -2,28 +2,27 @@
 import { useState } from "react";
 import { authService } from "../services/auth";
 import { useIonRouter } from "@ionic/react";
+import { useMutation } from "@tanstack/react-query";
 
 export const useFetchSignup = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
     const [error, setError] = useState<null | string>(null)
     const [validationErrors, setValidationErrors] = useState<string[]>([])
 
     const router = useIonRouter()
 
-    const handleSignup = async (data: any) => {
-        setIsLoading(true)
+    const mutation = useMutation({
+        mutationFn: async (data: any) => {
+            const body = {
+                ...data,
+                role: 'CUSTOMER'
+            }
 
-        const body = {
-            ...data,
-            role: 'CUSTOMER'
-        }
-
-        try {
             await authService.signup(body)
-            setSuccess(true)
+        },
+        onSuccess: () => {
             router.push('/login')
-        } catch (error: any) {
+        },
+        onError: (error: any) => {
             const errors = error.response?.data?.errors || [];
             if (errors.length > 0) {
                 const errorMessages = errors.map((err: any) => err.message)
@@ -31,19 +30,17 @@ export const useFetchSignup = () => {
             } else {
                 setError(error.response?.data.message)
             }
-        } finally {
-            setIsLoading(false)
         }
-    }
+    })
 
     return {
-        isLoading,
-        success,
-        setSuccess,
-        setError,
+        handleSignup: mutation.mutate,
+        isLoading: mutation.isPending,
+        isSuccess: mutation.isSuccess,
         error,
+        setError,
+        reset: mutation.reset,
         setValidationErrors,
-        validationErrors,
-        handleSignup
+        validationErrors
     }
 }

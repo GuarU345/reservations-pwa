@@ -3,32 +3,32 @@ import { useIonRouter } from "@ionic/react"
 import { useState } from "react"
 import { authService } from "../services/auth"
 import { useAuthStore } from "../store/useAuthStore"
+import { useMutation } from "@tanstack/react-query"
 
 export const useFetchSignin = () => {
-    const [isLoading, setIsLoading] = useState(false)
-    const [success, setSuccess] = useState(false)
     const [error, setError] = useState<null | string>(null)
     const [validationErrors, setValidationErrors] = useState<string[]>([])
     const { setUser, setToken, setIsLogin } = useAuthStore()
 
     const router = useIonRouter()
 
-    const handleSignin = async (data: any) => {
-        setIsLoading(true)
+    const mutation = useMutation({
+        mutationFn: async (data: any) => {
+            const body = {
+                ...data,
+                role: 'CUSTOMER'
+            }
 
-        const body = {
-            ...data,
-            role: 'CUSTOMER'
-        }
-
-        try {
             const response = await authService.signin(body)
-            setSuccess(true)
-            setUser(response.user)
-            setToken(response.token)
+            return response
+        },
+        onSuccess: (data: any) => {
+            setUser(data.user)
+            setToken(data.token)
             setIsLogin(true)
             router.push('/home', 'forward')
-        } catch (error: any) {
+        },
+        onError: (error: any) => {
             const errors = error.response?.data?.errors || [];
             if (errors.length > 0) {
                 const errorMessages = errors.map((err: any) => err.message)
@@ -36,19 +36,17 @@ export const useFetchSignin = () => {
             } else {
                 setError(error.response?.data.message)
             }
-        } finally {
-            setIsLoading(false)
         }
-    }
+    })
 
     return {
-        isLoading,
-        success,
-        setSuccess,
-        setError,
+        handleSignin: mutation.mutate,
+        isLoading: mutation.isPending,
+        isSuccess: mutation.isSuccess,
         error,
+        setError,
+        reset: mutation.reset,
         setValidationErrors,
-        validationErrors,
-        handleSignin
+        validationErrors
     }
 }
