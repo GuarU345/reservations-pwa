@@ -13,17 +13,14 @@ import {
 } from "@ionic/react"
 import { useFetchCancelReservation } from "../../hooks/useFetchCancelReservation"
 import ValidationAlert from "../ValidationAlert"
+import { useModalStore } from "../../store/useModalStore"
 
 interface CancelReservationProps {
-    showModal: boolean
-    setShowModal: (show: boolean) => void
     reservationId: string
 }
 
 const CancelReservationModal: React.FC<CancelReservationProps> = ({
-    reservationId,
-    showModal,
-    setShowModal
+    reservationId
 }) => {
     const {
         cancelReservation,
@@ -33,6 +30,8 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
         validationErrors,
         setValidationErrors,
     } = useFetchCancelReservation(reservationId)
+
+    const { showModal, setShowModal } = useModalStore()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -48,10 +47,10 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
 
     return (
         <>
-            <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+            <IonModal isOpen={showModal}>
                 <IonHeader>
                     <IonToolbar>
-                        <IonTitle>Nueva Reservación</IonTitle>
+                        <IonTitle>Cancelar Reservación</IonTitle>
                     </IonToolbar>
                 </IonHeader>
 
@@ -79,7 +78,7 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
             <IonToast
                 isOpen={isSuccess}
                 position="middle"
-                message="Reservación cancelada con éxito"
+                message="Reservación cancelada correctamente"
                 duration={2000}
             />
 

@@ -2,16 +2,13 @@ import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel
 import { useFetchCreateReservation } from "../../hooks/useFetchCreateReservation"
 import React from "react"
 import ValidationAlert from "../ValidationAlert"
+import { useModalStore } from "../../store/useModalStore"
 
 interface ReservationModalProps {
-    showModal: boolean
-    setShowModal: (show: boolean) => void
     businessId: string | undefined
 }
 
 const ReservationModal: React.FC<ReservationModalProps> = ({
-    showModal,
-    setShowModal,
     businessId
 }) => {
     const {
@@ -22,6 +19,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         validationErrors,
         setValidationErrors
     } = useFetchCreateReservation()
+
+    const { showModal, setShowModal } = useModalStore()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -36,14 +35,11 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         }
 
         createReservation(data)
-        if (isSuccess) {
-            setShowModal(false)
-        }
     }
 
     return (
         <>
-            <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+            <IonModal isOpen={showModal}>
                 <IonHeader>
                     <IonToolbar>
                         <IonTitle>Nueva Reservación</IonTitle>
@@ -91,7 +87,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             <IonToast
                 isOpen={isSuccess}
                 position="middle"
-                message="Reservación creada con éxito"
+                message="Reservación creada correctamente"
                 duration={2000}
             />
 
