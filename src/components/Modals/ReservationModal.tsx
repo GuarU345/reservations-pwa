@@ -1,4 +1,4 @@
-import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToolbar } from "@ionic/react"
+import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToast, IonToolbar } from "@ionic/react"
 import { useFetchCreateReservation } from "../../hooks/useFetchCreateReservation"
 import React from "react"
 import ValidationAlert from "../ValidationAlert"
@@ -15,9 +15,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
     businessId
 }) => {
     const {
-        handleCreate,
-        success,
-        setSuccess,
+        createReservation,
+        isSuccess,
         error,
         setError,
         validationErrors,
@@ -36,8 +35,8 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
             endTime: formData.get('endTime')
         }
 
-        handleCreate(data)
-        if (success) {
+        createReservation(data)
+        if (isSuccess) {
             setShowModal(false)
         }
     }
@@ -89,12 +88,11 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 </IonContent>
             </IonModal>
 
-            <IonAlert
-                isOpen={success}
-                onDidDismiss={() => setSuccess(false)}
-                header="Exito"
+            <IonToast
+                isOpen={isSuccess}
+                position="middle"
                 message="Reservación creada con éxito"
-                buttons={['Entendido']}
+                duration={2000}
             />
 
             <ValidationAlert
@@ -106,7 +104,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
 
             <IonAlert
                 isOpen={!!error}
-                onDidDismiss={() => setError('')}
+                onDidDismiss={() => setError("")}
                 header="Error"
                 message={error || ''}
                 buttons={['Entendido']}
