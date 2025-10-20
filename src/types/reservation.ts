@@ -12,7 +12,16 @@ export interface Reservation {
     status: keyof typeof RESERVATION_STATUS
     active: boolean
     created_at: string
-    reservation_cancellations: any[]
+    businesses: {
+        name: string
+    }
+    reservation_cancellations: ReservationCancellation
+}
+
+interface ReservationCancellation {
+    cancelled_by: string
+    reason: string
+    cancelled_at: Date
 }
 
 export interface ReservationBody {
