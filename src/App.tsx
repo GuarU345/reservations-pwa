@@ -41,6 +41,7 @@ import SessionChecker from './components/SessionChecker';
 import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 import Login from './pages/auth/Login';
+import PushSubscriber from './components/PushSubscriber';
 
 setupIonicReact();
 const queryClient = new QueryClient()
@@ -49,6 +50,7 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <IonApp>
+        <PushSubscriber />
         <IonReactRouter>
           <SessionChecker />
           <IonRouterOutlet>
