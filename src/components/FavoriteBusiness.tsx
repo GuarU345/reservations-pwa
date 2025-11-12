@@ -26,8 +26,8 @@ const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }
             <IonIcon color={isLiked ? 'warning' : 'medium'} onClick={handleClick} icon={star} size="large" className="mb-2 text-primary" />
 
             <IonToast
-                position='middle'
                 isOpen={isSuccess}
+                position='middle'
                 message={message}
                 duration={2000}
             />

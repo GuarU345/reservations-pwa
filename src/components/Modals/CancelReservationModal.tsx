@@ -8,30 +8,24 @@ import {
     IonModal,
     IonTextarea,
     IonTitle,
-    IonToast,
     IonToolbar
 } from "@ionic/react"
 import { useFetchCancelReservation } from "../../hooks/useFetchCancelReservation"
 import ValidationAlert from "../ValidationAlert"
 import { useModalStore } from "../../store/useModalStore"
 
-interface CancelReservationProps {
-    reservationId: string
-}
+const CancelReservationModal: React.FC = () => {
+    const { showModal, selectedId, closeModal } = useModalStore()
 
-const CancelReservationModal: React.FC<CancelReservationProps> = ({
-    reservationId
-}) => {
     const {
         cancelReservation,
-        isSuccess,
+        success,
+        setSuccess,
         error,
         setError,
         validationErrors,
         setValidationErrors,
-    } = useFetchCancelReservation(reservationId)
-
-    const { showModal, setShowModal } = useModalStore()
+    } = useFetchCancelReservation(selectedId!)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -67,7 +61,7 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
                             <IonButton type="submit" color="success">
                                 Guardar
                             </IonButton>
-                            <IonButton color="medium" onClick={() => setShowModal(false)}>
+                            <IonButton color="medium" onClick={() => closeModal()}>
                                 Cancelar
                             </IonButton>
                         </div>
@@ -75,11 +69,15 @@ const CancelReservationModal: React.FC<CancelReservationProps> = ({
                 </IonContent>
             </IonModal>
 
-            <IonToast
-                isOpen={isSuccess}
-                position="middle"
+            <IonAlert
+                isOpen={success}
+                onDidDismiss={() => {
+                    setSuccess(false)
+                    closeModal()
+                }}
+                header="Exito"
                 message="Reservación cancelada correctamente"
-                duration={2000}
+                buttons={['Entendido']}
             />
 
             <ValidationAlert

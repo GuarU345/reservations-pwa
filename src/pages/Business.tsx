@@ -9,7 +9,7 @@ import { useModalStore } from "../store/useModalStore"
 const Business: React.FC = () => {
     const { businessId } = useParams<{ businessId: string }>()
     const { token } = useAuthStore()
-    const { showModal, setShowModal } = useModalStore()
+    const { showModal, openModal } = useModalStore()
 
     const { businessData, isLoading, error } = useFetchBusinessData(token!, businessId!)
 
@@ -75,14 +75,12 @@ const Business: React.FC = () => {
                     </IonCard>
                 )}
 
-                <IonButton onClick={() => setShowModal(true)} style={{ marginLeft: '0.5rem' }}>
+                <IonButton onClick={() => openModal(businessData?.id as string)} style={{ marginLeft: '0.5rem' }}>
                     Agendar reservación
                 </IonButton>
 
                 {showModal && (
-                    <ReservationModal
-                        businessId={businessData?.id}
-                    />
+                    <ReservationModal />
                 )}
             </IonContent>
         </IonPage>

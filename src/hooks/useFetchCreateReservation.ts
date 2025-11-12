@@ -3,13 +3,12 @@ import { useAuthStore } from "../store/useAuthStore"
 import { reservationsService } from "../services/reservations"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
-import { useModalStore } from "../store/useModalStore"
 
 export const useFetchCreateReservation = () => {
     const { token } = useAuthStore()
     const [error, setError] = useState("")
+    const [success, setSuccess] = useState(false)
     const [validationErrors, setValidationErrors] = useState([])
-    const { setShowModal } = useModalStore()
 
     const queryClient = useQueryClient()
 
@@ -19,7 +18,7 @@ export const useFetchCreateReservation = () => {
         },
         onSuccess: async () => {
             await queryClient.refetchQueries({ queryKey: ['reservations'] })
-            setShowModal(false)
+            setSuccess(true)
         },
         onError: (error: any) => {
             const errors = error.response?.data?.errors || [];
@@ -35,7 +34,8 @@ export const useFetchCreateReservation = () => {
     return {
         createReservation: mutation.mutate,
         isLoading: mutation.isPending,
-        isSuccess: mutation.isSuccess,
+        success,
+        setSuccess,
         error,
         setError,
         reset: mutation.reset,

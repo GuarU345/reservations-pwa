@@ -1,26 +1,32 @@
-import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonModal, IonTitle, IonToast, IonToolbar } from "@ionic/react"
+import {
+    IonAlert,
+    IonButton,
+    IonContent,
+    IonHeader,
+    IonInput,
+    IonItem,
+    IonLabel,
+    IonModal,
+    IonTitle,
+    IonToolbar
+} from "@ionic/react"
 import { useFetchCreateReservation } from "../../hooks/useFetchCreateReservation"
 import React from "react"
 import ValidationAlert from "../ValidationAlert"
 import { useModalStore } from "../../store/useModalStore"
 
-interface ReservationModalProps {
-    businessId: string | undefined
-}
-
-const ReservationModal: React.FC<ReservationModalProps> = ({
-    businessId
-}) => {
+const ReservationModal: React.FC = () => {
     const {
         createReservation,
-        isSuccess,
+        success,
+        setSuccess,
         error,
         setError,
         validationErrors,
         setValidationErrors
     } = useFetchCreateReservation()
 
-    const { showModal, setShowModal } = useModalStore()
+    const { showModal, selectedId, closeModal } = useModalStore()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -28,7 +34,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
         const formData = new FormData(form)
 
         const data = {
-            businessId,
+            businessId: selectedId,
             numberOfPeople: Number(formData.get('numberOfPeople')),
             startTime: formData.get('startTime'),
             endTime: formData.get('endTime')
@@ -76,7 +82,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                             <IonButton type="submit" color="success">
                                 Guardar
                             </IonButton>
-                            <IonButton color="medium" onClick={() => setShowModal(false)}>
+                            <IonButton color="medium" onClick={() => closeModal()}>
                                 Cancelar
                             </IonButton>
                         </div>
@@ -84,11 +90,15 @@ const ReservationModal: React.FC<ReservationModalProps> = ({
                 </IonContent>
             </IonModal>
 
-            <IonToast
-                isOpen={isSuccess}
-                position="middle"
+            <IonAlert
+                isOpen={success}
+                onDidDismiss={() => {
+                    setSuccess(false)
+                    closeModal()
+                }}
+                header="Exito"
                 message="Reservación creada correctamente"
-                duration={2000}
+                buttons={['Entendido']}
             />
 
             <ValidationAlert

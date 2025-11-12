@@ -23,7 +23,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
     } = reservation
 
     const { user } = useAuthStore()
-    const { showModal, setShowModal } = useModalStore()
+    const { showModal, openModal } = useModalStore()
 
     const getStatusColor = (status: keyof typeof RESERVATION_STATUS) => {
         const statusColors = {
@@ -108,15 +108,13 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
                         )}
                     </IonList>
                     {status === 'PENDING' && (
-                        <IonButton onClick={() => setShowModal(true)}>
+                        <IonButton onClick={() => openModal(id)}>
                             Cancelar Reservación
                         </IonButton>
                     )}
 
                     {showModal &&
-                        <CancelReservationModal
-                            reservationId={id}
-                        />
+                        <CancelReservationModal />
                     }
                 </IonCardContent>
             </IonCard>

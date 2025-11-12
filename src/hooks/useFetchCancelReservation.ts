@@ -9,8 +9,9 @@ import { useModalStore } from "../store/useModalStore"
 export const useFetchCancelReservation = (reservationId: string) => {
     const { token } = useAuthStore()
     const [error, setError] = useState("")
+    const [success, setSuccess] = useState(false)
     const [validationErrors, setValidationErrors] = useState([])
-    const { setShowModal } = useModalStore()
+    const { closeModal } = useModalStore()
 
     const queryClient = useQueryClient()
 
@@ -21,7 +22,7 @@ export const useFetchCancelReservation = (reservationId: string) => {
         },
         onSuccess: async () => {
             await queryClient.refetchQueries({ queryKey: ['reservations'] })
-            setShowModal(false)
+            setSuccess(true)
         },
         onError: (error: any, _variables, _context) => {
             const errors = error.response?.data?.errors || [];
@@ -37,7 +38,8 @@ export const useFetchCancelReservation = (reservationId: string) => {
     return {
         cancelReservation: mutation.mutate,
         isLoading: mutation.isPending,
-        isSuccess: mutation.isSuccess,
+        success,
+        setSuccess,
         error,
         setError,
         reset: mutation.reset,
