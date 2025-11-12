@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { RESERVATION_STATUS } from "../utils/constants"
 
 export interface Reservation {
