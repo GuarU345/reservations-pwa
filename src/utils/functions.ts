@@ -7,3 +7,13 @@ export const urlBase64ToUint8Array = (base64String: string) => {
     for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
     return outputArray;
 };
+
+export const arrayBufferToBase64 = (buffer: ArrayBuffer | null) => {
+    if (!buffer) return ''
+    const bytes = new Uint8Array(buffer)
+    let binary = ''
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i])
+    }
+    return btoa(binary)
+}

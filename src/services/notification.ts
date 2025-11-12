@@ -10,3 +10,12 @@ export const subscribe = async (body: any, token: string) => {
     })
     return data
 }
+
+export const isActiveSubscription = async (token: string, endpoint: string) => {
+    const { data } = await axios.get(`/notifications/active?endpoint=${endpoint}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    return data
+}
