@@ -50,9 +50,9 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <IonApp>
-        <PushSubscriber />
         <IonReactRouter>
           <SessionChecker />
+          <PushSubscriber />
           <IonRouterOutlet>
             {/* Protected Routes */}
             <PrivateRoute exact path="/home" component={Home} />

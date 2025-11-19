@@ -11,12 +11,8 @@ const signin = async (body: Signin) => {
     return data
 }
 
-const logout = async (token: string) => {
-    const { data } = await axios.post("/logout", {}, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+const logout = async () => {
+    const { data } = await axios.post("/logout", {})
     return data
 }
 

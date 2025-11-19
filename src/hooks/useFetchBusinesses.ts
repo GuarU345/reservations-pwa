@@ -3,16 +3,15 @@ import { Business } from "../types/business";
 import { businessesService } from "../services/businesses";
 import { useQuery } from "@tanstack/react-query";
 
-export const useFetchBusinesses = (token: string) => {
+export const useFetchBusinesses = () => {
     const [searchText, setSearchText] = useState('')
 
     const { data: businesses = [], isLoading, error } = useQuery<Business[], Error>({
-        queryKey: ['businesses', token],
+        queryKey: ['businesses'],
         queryFn: async () => {
-            const response = await businessesService.getBusinesses(token)
+            const response = await businessesService.getBusinesses()
             return response
         },
-        enabled: !!token,
         staleTime: 0,
     })
 

@@ -13,7 +13,7 @@ const PushSubscriber: React.FC = () => {
         const permission = await Notification.requestPermission()
         if (permission !== "granted") return
 
-        await subscribeUserWeb(token!)
+        await subscribeUserWeb()
     }
 
     const movilSubscribe = async () => {
@@ -21,7 +21,7 @@ const PushSubscriber: React.FC = () => {
 
         if (permission.receive !== "granted") return
 
-        await subscribeUserMobile(token!)
+        await subscribeUserMobile()
     }
 
     useEffect(() => {
@@ -31,9 +31,9 @@ const PushSubscriber: React.FC = () => {
             const platform = Capacitor.getPlatform()
 
             if (platform === "web") {
-                webSubscribe()
+                await webSubscribe()
             } else if (platform === "android" || platform === "ios") {
-                movilSubscribe()
+                await movilSubscribe()
             }
         }
 

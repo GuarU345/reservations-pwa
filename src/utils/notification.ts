@@ -2,7 +2,7 @@ import { PushNotifications } from "@capacitor/push-notifications"
 import { isActiveSubscription, subscribe } from "../services/notification"
 import { arrayBufferToBase64, urlBase64ToUint8Array } from "./functions"
 
-export const subscribeUserWeb = async (token: string) => {
+export const subscribeUserWeb = async () => {
     if (!('serviceWorker' in navigator)) return
 
     const registration = await navigator.serviceWorker.ready
@@ -17,10 +17,11 @@ export const subscribeUserWeb = async (token: string) => {
             applicationServerKey: convertedVapidKey
         })
 
-        await saveSubscription(subscription, token)
+        await saveSubscription(subscription)
+        return
     }
 
-    const response = await isActiveSubscription(token, existingSubscription?.endpoint ?? "")
+    const response = await isActiveSubscription(existingSubscription?.endpoint ?? "")
 
     if (response.active) return
 
@@ -31,10 +32,10 @@ export const subscribeUserWeb = async (token: string) => {
         applicationServerKey: convertedVapidKey
     })
 
-    await saveSubscription(newSubscription, token)
+    await saveSubscription(newSubscription)
 }
 
-export const subscribeUserMobile = async (token: string) => {
+export const subscribeUserMobile = async () => {
     PushNotifications.register()
 
     PushNotifications.addListener('registration', async mobileToken => {
@@ -42,7 +43,7 @@ export const subscribeUserMobile = async (token: string) => {
             type: 'ANDROID',
             token: mobileToken.value,
         }
-        await subscribe(subscribeData, token)
+        await subscribe(subscribeData)
     })
 
     PushNotifications.addListener('pushNotificationReceived', notification => {
@@ -54,7 +55,7 @@ export const subscribeUserMobile = async (token: string) => {
     })
 }
 
-const saveSubscription = async (subscription: PushSubscription, token: string) => {
+const saveSubscription = async (subscription: PushSubscription) => {
     const subscribeData = {
         type: 'WEB',
         endpoint: subscription.endpoint,
@@ -63,5 +64,5 @@ const saveSubscription = async (subscription: PushSubscription, token: string) =
         expirationTime: subscription.expirationTime
     }
 
-    await subscribe(subscribeData, token)
+    await subscribe(subscribeData)
 }

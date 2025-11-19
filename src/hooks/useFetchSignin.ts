@@ -4,11 +4,12 @@ import { useState } from "react"
 import { authService } from "../services/auth"
 import { useAuthStore } from "../store/useAuthStore"
 import { useMutation } from "@tanstack/react-query"
+import { saveSession } from "../store/sessionStorage"
 
 export const useFetchSignin = () => {
     const [error, setError] = useState<null | string>(null)
     const [validationErrors, setValidationErrors] = useState<string[]>([])
-    const { setUser, setToken, setIsLogin } = useAuthStore()
+    const { login } = useAuthStore()
 
     const router = useIonRouter()
 
@@ -22,11 +23,21 @@ export const useFetchSignin = () => {
             const response = await authService.signin(body)
             return response
         },
-        onSuccess: (data: any) => {
-            setUser(data.user)
-            setToken(data.token)
-            setIsLogin(true)
-            router.push('/home', 'forward')
+        onSuccess: async (data: any) => {
+            const session = {
+                user: data.user,
+                token: data.token,
+                isLogged: true,
+            }
+
+            await saveSession(session)
+
+            login({
+                user: data.user,
+                token: data.token
+            })
+
+            router.push('/home')
         },
         onError: (error: any) => {
             const errors = error.response?.data?.errors || [];

@@ -17,7 +17,7 @@ export const useFetchCancelReservation = (reservationId: string) => {
 
     const mutation = useMutation({
         mutationFn: async (body: any) => {
-            const response = reservationsService.cancelReservation(token!, reservationId, body)
+            const response = reservationsService.cancelReservation(reservationId, body)
             return response
         },
         onSuccess: async () => {

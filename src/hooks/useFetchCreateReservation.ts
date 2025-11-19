@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useAuthStore } from "../store/useAuthStore"
 import { reservationsService } from "../services/reservations"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 
 export const useFetchCreateReservation = () => {
-    const { token } = useAuthStore()
     const [error, setError] = useState("")
     const [success, setSuccess] = useState(false)
     const [validationErrors, setValidationErrors] = useState([])
@@ -14,7 +12,7 @@ export const useFetchCreateReservation = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
-            await reservationsService.createReservation(token!, data)
+            await reservationsService.createReservation(data)
         },
         onSuccess: async () => {
             await queryClient.refetchQueries({ queryKey: ['reservations'] })

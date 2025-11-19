@@ -1,20 +1,12 @@
 import { axios } from "../utils/axios"
 
-const likeBusiness = async (token: string, businessId: string) => {
-    const { data } = await axios.post(`/like/business/${businessId}`, {}, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+const likeBusiness = async (businessId: string) => {
+    const { data } = await axios.post(`/like/business/${businessId}`, {})
     return data
 }
 
-const dislikeBusiness = async (token: string, businessId: string) => {
-    const { data } = await axios.delete(`/dislike/business/${businessId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+const dislikeBusiness = async (businessId: string) => {
+    const { data } = await axios.delete(`/dislike/business/${businessId}`)
     return data
 }
 
