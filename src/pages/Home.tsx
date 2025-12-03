@@ -10,6 +10,7 @@ import { calendar, pin, heart } from 'ionicons/icons'
 import { useAuthStore } from '../store/useAuthStore';
 import HomeItem from '../components/HomeItem';
 import LogoutButton from '../components/LogoutButton';
+import IsOnline from '../components/IsOnline';
 
 const Home: React.FC = () => {
   const { user } = useAuthStore()
@@ -26,6 +27,7 @@ const Home: React.FC = () => {
       </IonHeader>
 
       <IonContent fullscreen>
+        <IsOnline/>
         <div style={{ marginLeft: '1rem' }}>
           <h2>¡Hola, {user?.name}!</h2>
           <p>¿Qué deseas hacer hoy?</p>

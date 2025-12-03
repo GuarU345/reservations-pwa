@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Network } from "@capacitor/network"
 import { reservationsService } from "../services/reservations"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
+import { putLocalPendings } from "../services/local/pendings"
 
 export const useFetchCreateReservation = () => {
     const [error, setError] = useState("")
@@ -12,6 +14,13 @@ export const useFetchCreateReservation = () => {
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
+            const {connected} = await Network.getStatus()
+
+            if (!connected) {
+                await putLocalPendings({...data, id: crypto.randomUUID()});
+                return;
+            }
+
             await reservationsService.createReservation(data)
         },
         onSuccess: async () => {

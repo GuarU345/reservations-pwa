@@ -1,23 +1,25 @@
 import Dexie, { Table } from "dexie";
 import { Business } from "../types/business";
 import { Reservation } from "../types/reservation";
+import { Pending } from "../types/pendings";
 
 class AppLocalDatabase extends Dexie {
     businesses!: Table<Business>
     reservations!: Table<Reservation>
+    pendings!: Table<Pending>;
 
     constructor() {
         super('local-db')
         this.version(2).stores({
             businesses: '&id,name',
-            reservations: '&id,business_id,user_id,status'
+            reservations: '&id,business_id,user_id,status',
+            pendings: '&uid,businessId,numberOfPeople,startTime,endTime'
         })
     }
 }
 
 export const db = new AppLocalDatabase()
 
-// Error personalizado para modo offline
 export class OfflineError extends Error {
     constructor(message = 'No hay conexión a internet') {
         super(message)
