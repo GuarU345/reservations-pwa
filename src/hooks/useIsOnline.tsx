@@ -1,20 +1,29 @@
 import { Network } from "@capacitor/network"
-import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 
 export const useIsOnline = () => {
+    const [isOnline, setIsOnline] = useState<boolean | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
 
-    const {data, error, isLoading} = useQuery({
-        queryKey: ['isOnline'],
-        queryFn: async () => {
-            const { connected } = await Network.getStatus()
-            return connected
-        },
-        staleTime: 30 * 1000, // 30 seconds
-    })
+    useEffect(() => {
+        // Obtener estado inicial
+        Network.getStatus().then(({ connected }) => {
+            setIsOnline(connected)
+            setIsLoading(false)
+        })
+
+        // Escuchar cambios de conexión en tiempo real
+        const handler = Network.addListener('networkStatusChange', (status) => {
+            setIsOnline(status.connected)
+        })
+
+        return () => {
+            handler.then(h => h.remove())
+        }
+    }, [])
 
     return {
-        isOnline: data,
+        isOnline,
         isLoading,
-        error,
     }
 }
