@@ -20,6 +20,8 @@ const ReservationModal: React.FC = () => {
         createReservation,
         success,
         setSuccess,
+        savedOffline,
+        setSavedOffline,
         error,
         setError,
         validationErrors,
@@ -43,6 +45,8 @@ const ReservationModal: React.FC = () => {
         createReservation(data)
     }
 
+    console.log('Datos de la reservación:', {savedOffline, success, error, validationErrors});
+
     return (
         <>
             <IonModal isOpen={showModal}>
@@ -53,7 +57,7 @@ const ReservationModal: React.FC = () => {
                 </IonHeader>
 
                 <IonContent className="ion-padding">
-                    <form onSubmit={handleSubmit}>
+                    <form id="reservation-form" onSubmit={handleSubmit}>
                         <IonItem>
                             <IonLabel position="floating">Número de Personas</IonLabel>
                             <IonInput
@@ -79,7 +83,7 @@ const ReservationModal: React.FC = () => {
                         </IonItem>
 
                         <div style={{ marginTop: "20px", textAlign: "center" }}>
-                            <IonButton type="submit" color="success">
+                            <IonButton type="submit" form="reservation-form" color="success">
                                 Guardar
                             </IonButton>
                             <IonButton color="medium" onClick={() => closeModal()}>
@@ -96,8 +100,19 @@ const ReservationModal: React.FC = () => {
                     setSuccess(false)
                     closeModal()
                 }}
-                header="Exito"
+                header="Éxito"
                 message="Reservación creada correctamente"
+                buttons={['Entendido']}
+            />
+
+            <IonAlert
+                isOpen={savedOffline}
+                onDidDismiss={() => {
+                    setSavedOffline(false)
+                    closeModal()
+                }}
+                header="Guardado sin conexión"
+                message="Tu reservación se guardó localmente y se enviará automáticamente cuando recuperes la conexión a internet."
                 buttons={['Entendido']}
             />
 
