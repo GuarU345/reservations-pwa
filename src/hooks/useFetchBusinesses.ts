@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Business } from "../types/business";
 import { businessesService } from "../services/businesses";
 import { useQuery } from "@tanstack/react-query";
+import { getLocalBusinesses, saveLocalBusinesses } from "../services/local/businesses";
+import { Network } from "@capacitor/network";
 
 export const useFetchBusinesses = () => {
     const [searchText, setSearchText] = useState('')
@@ -9,8 +11,21 @@ export const useFetchBusinesses = () => {
     const { data: businesses = [], isLoading, error } = useQuery<Business[], Error>({
         queryKey: ['businesses'],
         queryFn: async () => {
-            const response = await businessesService.getBusinesses()
-            return response
+            try {
+                const { connected } = await Network.getStatus()
+
+                if (!connected) throw new Error('offline')
+
+                const response = await businessesService.getBusinesses()
+
+                saveLocalBusinesses(response)
+
+                return response
+            } catch {
+                const local = await getLocalBusinesses()
+                console.log(local)
+                return local
+            }
         },
         staleTime: 0,
     })

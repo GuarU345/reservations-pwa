@@ -14,12 +14,10 @@ import {
     IonToolbar
 } from "@ionic/react"
 import { useFetchReservations } from "../hooks/useFetchReservations"
-import { useAuthStore } from "../store/useAuthStore"
 import ReservationCard from "../components/ReservationCard"
 
 const Reservations: React.FC = () => {
-    const { token } = useAuthStore()
-    const { data: reservations, isLoading, error } = useFetchReservations(token!)
+    const { data: reservations, isLoading, error } = useFetchReservations()
 
     return (
         <IonPage>

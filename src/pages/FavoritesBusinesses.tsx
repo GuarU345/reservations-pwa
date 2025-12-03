@@ -12,12 +12,10 @@ import {
     IonToolbar,
 } from '@ionic/react';
 import { useFetchBusinesses } from "../hooks/useFetchBusinesses"
-import { useAuthStore } from "../store/useAuthStore"
 import FavoriteBusiness from '../components/FavoriteBusiness';
 
 const FavoriteBusinesses: React.FC = () => {
-    const { token } = useAuthStore()
-    const { filtered: businesses, error, isLoading } = useFetchBusinesses(token!)
+    const { filtered: businesses, error, isLoading } = useFetchBusinesses()
 
     const likedBusinesses = businesses.filter(business => business.liked)
 

@@ -15,9 +15,8 @@ export const loadSession = async () => {
 };
 
 export const getToken = async () => {
-    const { value } = await Preferences.get({ key: "session" })
-    if (!value) return null
-    const session = JSON.parse(value)
+    const session = await loadSession()
+    if (!session) return null
     return session.token
 }
 

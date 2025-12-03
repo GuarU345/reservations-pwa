@@ -1,6 +1,5 @@
 import { useParams } from "react-router"
 import { useFetchBusinessData } from "../hooks/useFetchBusinessData"
-import { useAuthStore } from "../store/useAuthStore"
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonPage, IonSpinner, IonText, IonTitle, IonToolbar } from "@ionic/react"
 import { BusinessHour } from "../types/business"
 import ReservationModal from "../components/Modals/ReservationModal"
@@ -8,10 +7,9 @@ import { useModalStore } from "../store/useModalStore"
 
 const Business: React.FC = () => {
     const { businessId } = useParams<{ businessId: string }>()
-    const { token } = useAuthStore()
     const { showModal, openModal } = useModalStore()
 
-    const { businessData, isLoading, error } = useFetchBusinessData(token!, businessId!)
+    const { businessData, isLoading, error } = useFetchBusinessData(businessId!)
 
     return (
         <IonPage>

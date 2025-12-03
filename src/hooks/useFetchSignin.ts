@@ -37,7 +37,7 @@ export const useFetchSignin = () => {
                 token: data.token
             })
 
-            router.push('/home')
+            router.push('/home', 'root')
         },
         onError: (error: any) => {
             const errors = error.response?.data?.errors || [];
