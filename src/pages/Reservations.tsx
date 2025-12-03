@@ -17,7 +17,7 @@ import { useFetchReservations } from "../hooks/useFetchReservations"
 import ReservationCard from "../components/ReservationCard"
 
 const Reservations: React.FC = () => {
-    const { data: reservations, isLoading, error } = useFetchReservations()
+    const { reservations, isLoading, error } = useFetchReservations()
 
     return (
         <IonPage>
@@ -29,7 +29,7 @@ const Reservations: React.FC = () => {
             <IonContent fullscreen>
                 <IonTitle style={{ marginTop: '20px' }}>Mis Reservaciones</IonTitle>
 
-                {error && <p>Error: {error.message}</p>}
+                {error && <p>Error: {error ?? 'Error desconocido'}</p>}
                 {isLoading && (
                     <div className="flex justify-center items-center h-full">
                         <IonSpinner name="crescent" />
