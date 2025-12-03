@@ -4,30 +4,40 @@ import { businessesService } from "../services/businesses";
 import { useQuery } from "@tanstack/react-query";
 import { getLocalBusinesses, saveLocalBusinesses } from "../services/local/businesses";
 import { Network } from "@capacitor/network";
+import { OfflineError } from "../utils/local-db";
 
 export const useFetchBusinesses = () => {
     const [searchText, setSearchText] = useState('')
+    const [isOffline, setIsOffline] = useState(false)
 
     const { data: businesses = [], isLoading, error } = useQuery<Business[], Error>({
         queryKey: ['businesses'],
         queryFn: async () => {
             try {
                 const { connected } = await Network.getStatus()
-
-                if (!connected) throw new Error('offline')
+                if (!connected) throw new OfflineError()
 
                 const response = await businessesService.getBusinesses()
-
-                saveLocalBusinesses(response)
-
+                await saveLocalBusinesses(response)
+                setIsOffline(false)
                 return response
-            } catch {
-                const local = await getLocalBusinesses()
-                console.log(local)
-                return local
+            } catch (error) {
+                const cached = await getLocalBusinesses()
+                
+                if (cached.length > 0) {
+                    setIsOffline(true)
+                    return cached
+                }
+
+                if (error instanceof OfflineError) {
+                    throw new Error('Sin conexión a internet')
+                }
+                
+                throw new Error('No fue posible obtener la información')
             }
         },
         staleTime: 0,
+        retry: false,
     })
 
     const filtered = useMemo(() => {
@@ -43,6 +53,7 @@ export const useFetchBusinesses = () => {
         filtered,
         isLoading,
         error: error?.message || null,
+        isOffline,
         searchText,
         setSearchText,
     }
