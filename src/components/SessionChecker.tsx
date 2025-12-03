@@ -1,16 +1,14 @@
 import { useEffect } from "react";
 import { useSessionManager } from "../hooks/useSessionManager";
-import { Capacitor } from "@capacitor/core";
 
 const SessionChecker: React.FC = () => {
-    const { checkSession } = useSessionManager()
+  const { checkSession } = useSessionManager();
 
-    useEffect(() => {
-        const platform = Capacitor.getPlatform()
-        checkSession(platform)
-    }, [])
+  useEffect(() => {
+    checkSession();
+  }, []);
 
-    return null;
+  return null;
 };
 
-export default SessionChecker
+export default SessionChecker;
