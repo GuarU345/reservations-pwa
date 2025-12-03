@@ -10,10 +10,10 @@ class AppLocalDatabase extends Dexie {
 
     constructor() {
         super('local-db')
-        this.version(2).stores({
+        this.version(3).stores({
             businesses: '&id,name',
             reservations: '&id,business_id,user_id,status',
-            pendings: '&uid,businessId,numberOfPeople,startTime,endTime'
+            pendings: '&id,businessId,numberOfPeople,startTime,endTime'
         })
     }
 }
