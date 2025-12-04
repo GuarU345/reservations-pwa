@@ -1,4 +1,3 @@
-import { PushNotifications } from "@capacitor/push-notifications"
 import { isActiveSubscription, subscribe } from "../services/notification"
 import { arrayBufferToBase64, urlBase64ToUint8Array } from "./functions"
 
@@ -33,26 +32,6 @@ export const subscribeUserWeb = async () => {
     })
 
     await saveSubscription(newSubscription)
-}
-
-export const subscribeUserMobile = async () => {
-    PushNotifications.register()
-
-    PushNotifications.addListener('registration', async mobileToken => {
-        const subscribeData = {
-            type: 'ANDROID',
-            token: mobileToken.value,
-        }
-        await subscribe(subscribeData)
-    })
-
-    PushNotifications.addListener('pushNotificationReceived', notification => {
-        console.log('Push recibido', notification)
-    })
-
-    PushNotifications.addListener('pushNotificationActionPerformed', notification => {
-        console.log('Notificación clickeada:', notification);
-    })
 }
 
 const saveSubscription = async (subscription: PushSubscription) => {

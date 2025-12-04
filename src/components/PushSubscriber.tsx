@@ -1,46 +1,30 @@
-import { useEffect } from "react"
-import { useAuthStore } from "../store/useAuthStore"
-import { subscribeUserWeb, subscribeUserMobile } from "../utils/notification"
-import { Capacitor } from "@capacitor/core"
-import { PushNotifications } from "@capacitor/push-notifications"
+import { useEffect } from "react";
+import { useAuthStore } from "../store/useAuthStore";
+import { subscribeUserWeb } from "../utils/notification";
 
 const PushSubscriber: React.FC = () => {
-    const { token } = useAuthStore()
+  const { token } = useAuthStore();
 
-    const webSubscribe = async () => {
-        if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+  const webSubscribe = async () => {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
 
-        const permission = await Notification.requestPermission()
-        if (permission !== "granted") return
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return;
 
-        await subscribeUserWeb()
-    }
+    await subscribeUserWeb();
+  };
 
-    const movilSubscribe = async () => {
-        const permission = await PushNotifications.requestPermissions()
+  useEffect(() => {
+    const initPush = async () => {
+      if (!token) return;
 
-        if (permission.receive !== "granted") return
+      await webSubscribe();
+    };
 
-        await subscribeUserMobile()
-    }
+    initPush();
+  }, [token]);
 
-    useEffect(() => {
-        const initPush = async () => {
-            if (!token) return
+  return null;
+};
 
-            const platform = Capacitor.getPlatform()
-
-            if (platform === "web") {
-                await webSubscribe()
-            } else if (platform === "android" || platform === "ios") {
-                await movilSubscribe()
-            }
-        }
-
-        initPush()
-    }, [token])
-
-    return null
-}
-
-export default PushSubscriber
+export default PushSubscriber;
