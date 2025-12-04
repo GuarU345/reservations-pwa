@@ -10,11 +10,11 @@ export const useFetchReservations = () => {
     const [isOffline, setIsOffline] = useState(false)
 
     const { data: reservations = [], isLoading, error } = useQuery<Reservation[], Error>({
-        queryKey: ['reservations'],
+        queryKey: ['reservations', navigator.onLine],
         queryFn: async () => {
             try {
-                const { connected } = await Network.getStatus()
-                if (!connected) throw new OfflineError()
+                const isOnline = navigator.onLine
+                if (!isOnline) throw new OfflineError()
 
                 const response = await reservationsService.getReservations()
                 await saveLocalReservations(response)
@@ -35,8 +35,7 @@ export const useFetchReservations = () => {
                 throw new Error('No fue posible obtener la información')
             }
         },
-        staleTime: 0,
-        retry: false,
+        networkMode: 'always'
     })
 
     return {

@@ -16,7 +16,6 @@ export const useFetchCreateReservation = () => {
         networkMode: 'always',
         mutationFn: async (data: any) => {
             const isOnline = navigator.onLine
-
             if (!isOnline) {
                 await putLocalPendings({...data, id: crypto.randomUUID()});
                 return { savedOffline: true }

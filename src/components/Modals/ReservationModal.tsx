@@ -57,7 +57,7 @@ const ReservationModal: React.FC = () => {
                 </IonHeader>
 
                 <IonContent className="ion-padding">
-                    <form id="reservation-form" onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit}>
                         <IonItem>
                             <IonLabel position="floating">Número de Personas</IonLabel>
                             <IonInput
@@ -83,7 +83,7 @@ const ReservationModal: React.FC = () => {
                         </IonItem>
 
                         <div style={{ marginTop: "20px", textAlign: "center" }}>
-                            <IonButton type="submit" form="reservation-form" color="success">
+                            <IonButton type="submit" color="success">
                                 Guardar
                             </IonButton>
                             <IonButton color="medium" onClick={() => closeModal()}>

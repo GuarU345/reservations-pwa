@@ -3,6 +3,7 @@ import { businessesService } from "../services/businesses"
 import { Business } from "../types/business"
 import { useQuery } from "@tanstack/react-query"
 import { getLocalBusinesses } from "../services/local/businesses"
+import { useIsOnline } from "./useIsOnline"
 
 export const useFetchBusinessData = (businessId: string) => {
     const {
@@ -10,10 +11,11 @@ export const useFetchBusinessData = (businessId: string) => {
         isLoading,
         error,
     } = useQuery<Business, Error>({
-        queryKey: ['business', businessId],
+        queryKey: ['business', businessId, navigator.onLine],
         queryFn: async () => {
-            const {connected} = await Network.getStatus()
-            if (!connected) {
+            const isOnline = navigator.onLine
+
+            if (!isOnline) {
                 const business = await getLocalBusinesses();
                 const found = business.find(biz => biz.id === businessId);
                 if (found) {
@@ -26,8 +28,8 @@ export const useFetchBusinessData = (businessId: string) => {
             return response
         },
         enabled: !!businessId,
-        staleTime: 0,
         retry: 1,
+        networkMode: 'always'
     })
 
     return {
