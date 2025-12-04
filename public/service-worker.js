@@ -1,32 +1,47 @@
-self.__WB_DISABLE_DEV_LOGS = true
+self.__WB_DISABLE_DEV_LOGS = true;
 
-const CACHE = 'app-shell-v1'
+const CACHE = "app-shell-v1";
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/favicon.png',
-    '/assets/index-*.js',
-    '/assets/vendor-*.js',
-    '/assets/index-*.css'
-]
+  "/",
+  "/index.html",
+  "/manifest.json",
+  "/icono64.png",
+  "/icono512.png",
+];
 
-self.addEventListener('install', (e) => {
-    e.waitUntil(caches.open(CACHE).then(c => c.addAll(urlsToCache)))
-})
+self.addEventListener("install", (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(urlsToCache)));
+  self.skipWaiting();
+});
 
-self.addEventListener('push', (event) => {
-    const payload = event.data ? event.data.json() : {};
+self.addEventListener("activate", (e) => {
+  e.waitUntil(clients.claim());
+});
 
-    const title = payload.title || 'Notificación';
+self.addEventListener("push", (event) => {
+  const payload = event.data ? event.data.json() : {};
 
-    const options = {
-        body: payload.body || '',
-        icon: '/favicon.png',
-        data: payload,
-    };
+  const title = payload.title || "Notificación";
 
-    event.waitUntil(
-        self.registration.showNotification(title, options)
-    );
-})
+  const options = {
+    body: payload.body || "",
+    icon: "/icono64.png",
+    data: payload,
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      if (response) return response;
+
+      return fetch(event.request).catch(() => {
+        if (event.request.mode === "navigate") {
+          return caches.match("/index.html");
+        }
+      });
+    })
+  );
+});
