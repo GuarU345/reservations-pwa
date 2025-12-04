@@ -1,14 +1,48 @@
 import { reservationsService } from "../services/reservations"
 import { Reservation } from "../types/reservation"
 import { useQuery } from "@tanstack/react-query"
+import { Network } from "@capacitor/network"
+import { getLocalReservations, saveLocalReservations } from "../services/local/reservations"
+import { OfflineError } from "../utils/local-db"
+import { useState } from "react"
 
 export const useFetchReservations = () => {
-    return useQuery<Reservation[], Error>({
+    const [isOffline, setIsOffline] = useState(false)
+
+    const { data: reservations = [], isLoading, error } = useQuery<Reservation[], Error>({
         queryKey: ['reservations'],
         queryFn: async () => {
-            const response = await reservationsService.getReservations()
-            return response
+            try {
+                const { connected } = await Network.getStatus()
+                if (!connected) throw new OfflineError()
+
+                const response = await reservationsService.getReservations()
+                await saveLocalReservations(response)
+                setIsOffline(false)
+                return response
+            } catch (error) {
+                const cached = await getLocalReservations()
+                
+                if (cached.length > 0) {
+                    setIsOffline(true)
+                    return cached
+                }
+
+                if (error instanceof OfflineError) {
+                    throw new Error('Sin conexión a internet')
+                }
+                
+                throw new Error('No fue posible obtener la información')
+            }
         },
-        staleTime: 0
+        staleTime: 0,
+        retry: false,
     })
+
+    return {
+        reservations,
+        isLoading,
+        error: error?.message || null,
+        isOffline,
+    }
 }
