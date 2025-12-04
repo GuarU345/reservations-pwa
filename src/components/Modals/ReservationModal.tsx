@@ -45,8 +45,6 @@ const ReservationModal: React.FC = () => {
         createReservation(data)
     }
 
-    console.log('Datos de la reservación:', {savedOffline, success, error, validationErrors});
-
     return (
         <>
             <IonModal isOpen={showModal}>

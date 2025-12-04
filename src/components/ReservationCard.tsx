@@ -1,9 +1,10 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip, IonItem, IonLabel, IonList, IonText, IonTitle } from "@ionic/react"
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip, IonItem, IonLabel, IonList, IonText, IonTitle, IonToast } from "@ionic/react"
 import { Reservation } from "../types/reservation"
 import { RESERVATION_STATUS } from "../utils/constants"
 import CancelReservationModal from "./Modals/CancelReservationModal"
 import { useModalStore } from "../store/useModalStore"
 import { useAuthStore } from "../store/useAuthStore"
+import { useState } from "react"
 
 interface ReservationCardProps {
     reservation: Reservation
@@ -24,6 +25,7 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
 
     const { user } = useAuthStore()
     const { showModal, openModal } = useModalStore()
+    const [showOfflineAlert, setShowOfflineAlert] = useState(false)
 
     const getStatusColor = (status: keyof typeof RESERVATION_STATUS) => {
         const statusColors = {
@@ -108,10 +110,26 @@ const ReservationCard: React.FC<ReservationCardProps> = ({
                         )}
                     </IonList>
                     {status === 'PENDING' && (
-                        <IonButton onClick={() => openModal(id)}>
+                        <IonButton onClick={() => {
+                            if (!navigator.onLine) {
+                                setShowOfflineAlert(true)
+                                return
+                            }
+
+                            openModal(id)
+                        }}>
                             Cancelar Reservación
                         </IonButton>
                     )}
+
+                    <IonToast
+                        isOpen={showOfflineAlert}
+                        position="middle"
+                        title="Sin Conexión"
+                        message="No puedes cancelar reservaciones si no hay conexión"
+                        duration={2000}
+                        onDidDismiss={() => setShowOfflineAlert(false)}
+                    />
 
                     {showModal &&
                         <CancelReservationModal />

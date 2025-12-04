@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useIsOnline } from "../hooks/useIsOnline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -7,17 +7,18 @@ import {
   removeLocalPending,
 } from "../services/local/pendings";
 import { reservationsService } from "../services/reservations";
-import { IonBadge, IonChip, IonIcon, IonSpinner, IonText } from "@ionic/react";
+import { IonBadge, IonChip, IonIcon, IonSpinner, IonText, useIonToast } from "@ionic/react";
 import { cloudOffline, cloudDone, time } from "ionicons/icons";
 
 const IsOnline: React.FC = () => {
   const { isOnline, isLoading: isLoadingStatus } = useIsOnline();
   const queryClient = useQueryClient();
+  const [present] = useIonToast()
 
   const { data: pendingCount = 0, refetch: refetchPendings } = useQuery({
     queryKey: ["localPendingsCount"],
     queryFn: getPendingsCount,
-    refetchOnWindowFocus: true, 
+    refetchOnWindowFocus: true,
   });
 
   const { mutate: syncPendings, isPending: isSyncing } = useMutation({
@@ -29,8 +30,18 @@ const IsOnline: React.FC = () => {
         try {
           await reservationsService.createReservation(pending);
           await removeLocalPending(id);
-        } catch (error) {
-          console.error(`Error sincronizando reservación ${id}:`, error);
+        } catch (error: any) {
+          const errors = error.response?.data?.errors || [];
+          let errorMessage = ""
+          if (errors.length > 0) {
+            const errorMessages = errors.map((err: any) => err.message)
+            errorMessage = errorMessages[0]
+          } else {
+            errorMessage = error.response?.data.message
+          }
+
+          presentReservationOfflineErrors(errorMessage)
+          await removeLocalPending(id);
         }
       }
     },
@@ -39,6 +50,14 @@ const IsOnline: React.FC = () => {
       await queryClient.invalidateQueries({ queryKey: ["reservations"] });
     },
   });
+
+  const presentReservationOfflineErrors = (errorMessage: string) => {
+    present({
+      message: `${errorMessage} - asegurate de generar correctamente tu reservación`,
+      duration: 2000,
+      position: "top"
+    })
+  }
 
   useEffect(() => {
     if (isOnline) {
@@ -59,7 +78,7 @@ const IsOnline: React.FC = () => {
   return (
     <div
       style={{
-        display: isOnline ? "none": "flex",
+        display: isOnline ? "none" : "flex",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "8px 16px",

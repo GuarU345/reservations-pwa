@@ -1,9 +1,7 @@
-import { Network } from "@capacitor/network"
 import { businessesService } from "../services/businesses"
 import { Business } from "../types/business"
 import { useQuery } from "@tanstack/react-query"
 import { getLocalBusinesses } from "../services/local/businesses"
-import { useIsOnline } from "./useIsOnline"
 
 export const useFetchBusinessData = (businessId: string) => {
     const {
@@ -16,8 +14,8 @@ export const useFetchBusinessData = (businessId: string) => {
             const isOnline = navigator.onLine
 
             if (!isOnline) {
-                const business = await getLocalBusinesses();
-                const found = business.find(biz => biz.id === businessId);
+                const businesses = await getLocalBusinesses();
+                const found = businesses.find(biz => biz.id === businessId);
                 if (found) {
                     return found;
                 } else {

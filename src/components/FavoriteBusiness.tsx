@@ -1,6 +1,7 @@
 import { IonAlert, IonIcon, IonToast } from '@ionic/react'
 import { star } from 'ionicons/icons'
 import { useLikeBusiness } from '../hooks/useLikeBusiness'
+import { useState } from 'react'
 
 interface FavoriteBusinessProps {
     businessId: string
@@ -17,7 +18,14 @@ const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }
         isLiked
     } = useLikeBusiness(businessId, liked)
 
+    const [showOfflineAlert, setShowOfflineAlert] = useState(false)
+
     const handleClick = () => {
+        if (!navigator.onLine) {
+            setShowOfflineAlert(true)
+            return
+        }
+
         handleLikeBusiness()
     }
 
@@ -30,6 +38,14 @@ const FavoriteBusiness: React.FC<FavoriteBusinessProps> = ({ businessId, liked }
                 position='middle'
                 message={message}
                 duration={2000}
+            />
+
+            <IonToast
+                isOpen={showOfflineAlert}
+                position='middle'
+                message="No puedes realizar esta acción sin conexión"
+                duration={2000}
+                onDidDismiss={() => setShowOfflineAlert(false)}
             />
 
             <IonAlert
