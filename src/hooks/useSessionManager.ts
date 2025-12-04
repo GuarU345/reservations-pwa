@@ -19,13 +19,16 @@ export const useSessionManager = () => {
         setIsLogin(session.isLogged)
         setUser(session.user)
 
-        const { connected } = await Network.getStatus()
+        const connected = navigator.onLine;
 
         if (!connected) {
             const ok = await grantOfflineAccess()
 
             if (!ok) {
                 await clearSession()
+                setIsLogin(false);
+                setToken(null);
+                setUser(null);
                 router.push('/login', 'root')
             }
 
