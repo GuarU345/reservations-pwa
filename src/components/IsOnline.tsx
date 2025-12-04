@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useIsOnline } from "../hooks/useIsOnline";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getLocalPendings,
   getPendingsCount,
@@ -12,22 +12,17 @@ import { cloudOffline, cloudDone, time } from "ionicons/icons";
 
 const IsOnline: React.FC = () => {
   const { isOnline, isLoading: isLoadingStatus } = useIsOnline();
-  const [pendingCount, setPendingCount] = useState(0);
   const queryClient = useQueryClient();
 
-  const loadPendingCount = async () => {
-    const count = await getPendingsCount();
-    setPendingCount(count);
-  };
+  const { data: pendingCount = 0, refetch: refetchPendings } = useQuery({
+    queryKey: ["localPendingsCount"],
+    queryFn: getPendingsCount,
+    refetchOnWindowFocus: true, 
+  });
 
-  useEffect(() => {
-    loadPendingCount();
-  }, []);
-
-  const { mutate, isPending: isSyncing } = useMutation({
+  const { mutate: syncPendings, isPending: isSyncing } = useMutation({
     mutationFn: async () => {
       const pendings = await getLocalPendings();
-
       if (pendings.length === 0) return;
 
       for (const { id, ...pending } of pendings) {
@@ -35,39 +30,42 @@ const IsOnline: React.FC = () => {
           await reservationsService.createReservation(pending);
           await removeLocalPending(id);
         } catch (error) {
-          console.error("Error sincronizando reservación:", error);
+          console.error(`Error sincronizando reservación ${id}:`, error);
         }
       }
     },
     onSuccess: async () => {
-      await loadPendingCount();
+      await refetchPendings();
       await queryClient.invalidateQueries({ queryKey: ["reservations"] });
     },
   });
 
   useEffect(() => {
-    if (isOnline === true && pendingCount > 0) {
-      mutate();
+    if (isOnline) {
+      refetchPendings().then(({ data: count }) => {
+        if (count && count > 0) {
+          syncPendings();
+        }
+      });
     }
-  }, [isOnline, pendingCount, mutate]);
+  }, [isOnline, refetchPendings, syncPendings]);
 
-  useEffect(() => {
-    loadPendingCount();
-  }, [isOnline]);
+  if (isLoadingStatus) return null;
 
-  if (isLoadingStatus) {
-    return null;
-  }
+  const shouldShow = !isOnline || isSyncing || pendingCount > 0;
+
+  if (!shouldShow) return null;
 
   return (
     <div
       style={{
-        display: isOnline ?? true ? "none" : "flex",
+        display: isOnline ? "none": "flex",
         alignItems: "center",
         justifyContent: "space-between",
         padding: "8px 16px",
         backgroundColor: isOnline ? "#e8f5e9" : "#ffebee",
         borderBottom: `2px solid ${isOnline ? "#4caf50" : "#f44336"}`,
+        transition: "all 0.3s ease",
       }}
     >
       <IonChip color={isOnline ? "success" : "danger"} outline>
@@ -77,30 +75,23 @@ const IsOnline: React.FC = () => {
         </IonText>
       </IonChip>
 
-      {pendingCount > 0 && (
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          {isSyncing ? (
-            <>
-              <IonSpinner
-                name="crescent"
-                style={{ width: "16px", height: "16px" }}
-              />
-              <IonText color="medium">Sincronizando...</IonText>
-            </>
-          ) : (
-            <>
-              <IonIcon icon={time} color="warning" />
-              <IonText color="warning">
-                <strong>{pendingCount}</strong>{" "}
-                {pendingCount === 1
-                  ? "reservación pendiente"
-                  : "reservaciones pendientes"}
-              </IonText>
-              <IonBadge color="warning">{pendingCount}</IonBadge>
-            </>
-          )}
-        </div>
-      )}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {isSyncing ? (
+          <>
+            <IonSpinner name="crescent" style={{ width: "16px", height: "16px" }} />
+            <IonText color="medium">Sincronizando...</IonText>
+          </>
+        ) : pendingCount > 0 ? (
+          <>
+            <IonIcon icon={time} color="warning" />
+            <IonText color="warning">
+              <strong>{pendingCount}</strong>{" "}
+              {pendingCount === 1 ? "pendiente" : "pendientes"}
+            </IonText>
+            <IonBadge color="warning">{pendingCount}</IonBadge>
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };
