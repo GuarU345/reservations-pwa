@@ -11,3 +11,10 @@ export interface Signin {
     password: string
     role: string
 }
+
+export interface VerifyCodeResponse {
+  message: string;
+  tok_token: string;
+  usr_id: string;
+  cmp_id: string;
+}

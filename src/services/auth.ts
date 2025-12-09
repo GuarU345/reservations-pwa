@@ -1,5 +1,5 @@
 import { axios } from "../utils/axios"
-import { Signin, Signup } from "../types/auth"
+import { Signin, Signup, VerifyCodeResponse } from "../types/auth"
 
 const signup = async (body: Signup) => {
     const { data } = await axios.post('/signup', body)
@@ -10,6 +10,11 @@ const signin = async (body: Signin) => {
     const { data } = await axios.post('/signin', body)
     return data
 }
+
+const verifyCode = async (body: VerifyCodeResponse): Promise<VerifyCodeResponse> => {
+  const { data } = await axios.post(`/verify`, body);
+  return data;
+};
 
 const logout = async () => {
     const { data } = await axios.post("/logout", {})
@@ -29,5 +34,6 @@ export const authService = {
     signup,
     signin,
     logout,
-    tokenIsActive
+    tokenIsActive,
+    verifyCode
 }

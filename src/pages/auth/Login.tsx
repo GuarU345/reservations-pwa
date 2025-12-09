@@ -1,9 +1,13 @@
 import { IonAlert, IonButton, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSpinner, IonTitle, IonToast, IonToolbar, useIonRouter } from "@ionic/react"
-import React from "react"
+import React, { useState } from "react"
+import ReCAPTCHA from "react-google-recaptcha"
 import ValidationAlert from "../../components/ValidationAlert"
 import { useFetchSignin } from "../../hooks/useFetchSignin"
 
 const Login: React.FC = () => {
+
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+
     const {
         handleSignin,
         isLoading,
@@ -18,14 +22,20 @@ const Login: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        const form = e.target as HTMLFormElement
+
+        if (!captchaToken) {
+            setValidationErrors(["Debes completar el reCAPTCHA"])
+            return
+        }
+
         const formData = new FormData(e.target as HTMLFormElement)
         const data = {
-            email: formData.get('email') as string,
-            password: formData.get('password') as string,
+            email: formData.get("email") as string,
+            password: formData.get("password") as string,
+            recaptcha: captchaToken
         }
+
         handleSignin(data)
-        form.reset()
     }
 
     return (
@@ -42,26 +52,26 @@ const Login: React.FC = () => {
 
                         <IonItem>
                             <IonLabel position="floating">Email</IonLabel>
-                            <IonInput
-                                type="email"
-                                name="email"
-                                required
-                            />
+                            <IonInput type="email" name="email" required />
                         </IonItem>
 
                         <IonItem>
                             <IonLabel position="floating">Contraseña</IonLabel>
-                            <IonInput
-                                type="password"
-                                name="password"
-                                required
-                            />
+                            <IonInput type="password" name="password" required />
                         </IonItem>
+
+                        {/* ⭐ reCAPTCHA aquí */}
+                        <div style={{ marginTop: "20px", display: "flex", justifyContent: "center" }}>
+                            <ReCAPTCHA
+                                sitekey="TU_SITE_KEY_AQUI"
+                                onChange={(token) => setCaptchaToken(token)}
+                            />
+                        </div>
 
                         <IonToast
                             isOpen={isSuccess}
                             position="middle"
-                            message="Inicio de sesion correcto"
+                            message="Inicio de sesión correcto"
                             duration={2000}
                         />
 
@@ -76,26 +86,26 @@ const Login: React.FC = () => {
                             isOpen={!!error}
                             onDidDismiss={() => setError("")}
                             header="Error"
-                            message={error || ''}
-                            buttons={['Entendido']}
+                            message={error || ""}
+                            buttons={["Entendido"]}
                         />
 
                         <div>
                             <IonButton type="submit" expand="block" disabled={isLoading}>
-                                {isLoading ? <IonSpinner name="crescent" /> : 'Iniciar Sesión'}
+                                {isLoading ? <IonSpinner name="crescent" /> : "Iniciar Sesión"}
                             </IonButton>
                         </div>
 
                         <div>
                             <IonButton
-                                style={{ display: 'flex', alingItems: 'center' }}
                                 fill="clear"
                                 color="primary"
-                                onClick={() => router.push('/register')}
+                                onClick={() => router.push("/register")}
                             >
                                 ¿No tienes cuenta? Regístrate
                             </IonButton>
                         </div>
+
                     </IonList>
                 </form>
             </IonContent>

@@ -99,7 +99,6 @@ const Register: React.FC = () => {
                             buttons={['Entendido']}
                         />
 
-                        {/* Botón */}
                         <div className="ion-text-center ion-margin-top">
                             <IonButton type="submit" expand="block" disabled={isLoading}>
                                 {isLoading ? <IonSpinner name="crescent" /> : 'Registrarme'}
@@ -116,7 +115,13 @@ const Register: React.FC = () => {
                                 ¿Ya tienes cuenta? Inicia sesión
                             </IonButton>
                         </div>
-                    </IonList>
+                        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <div className="margin-top:16px;">
+        <div className="g-recaptcha" data-sitekey="your_site_key"></div>
+    </div>
+
+</IonList>
                 </form>
             </IonContent>
         </IonPage>
