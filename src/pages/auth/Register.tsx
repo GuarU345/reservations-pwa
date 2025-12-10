@@ -118,7 +118,7 @@ const Register: React.FC = () => {
                         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <div className="margin-top:16px;">
-        <div className="g-recaptcha" data-sitekey="your_site_key"></div>
+        <div className="g-recaptcha" data-sitekey={import.meta.env.SITE_KEY}></div>
     </div>
 
 </IonList>
